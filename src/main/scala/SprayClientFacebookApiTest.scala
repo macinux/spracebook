@@ -41,37 +41,91 @@ fb.createComment("4286226694008", "Check it out! http://cuppofjoe.com", token)
 
 */
 
-import akka.dispatch.Future
+import scala.concurrent.Future
+
 import akka.actor._
-import akka.dispatch.Await
-import akka.util.duration._
+import scala.concurrent.Await
+import scala.concurrent.duration
 import akka.util.Timeout
-import spray.can.client.HttpClient
-import spray.client.HttpConduit
-import spray.io._
-import spray.util._
+
+import akka.io.IO
+import akka.pattern.ask
+import spracebook.FacebookGraphApiJsonProtocol.User
+import spray.can.Http
 import spray.http._
-import HttpMethods._
-import HttpConduit._
+import spray.client.pipelining._
+
+
+import scala.util.{Success, Failure}
+import scala.concurrent.duration._
+import akka.actor.ActorSystem
+import akka.pattern.ask
+import akka.event.Logging
+import spray.util._
+import akka.routing.FromConfig
+import scala.concurrent.Await
+import akka.pattern.ask
+import akka.util.Timeout
+import scala.concurrent.duration._
+import scala.language.postfixOps
+
 
 object SprayCientFacebookApiTest {
-  implicit val system = ActorSystem()
-  val ioBridge = IOExtension(system).ioBridge()
-  val httpClient = system.actorOf(Props(new HttpClient(ioBridge)))
+//  implicit val system = ActorSystem()
+//  val ioBridge = IOExtension(system).ioBridge()
+//  val httpClient = system.actorOf(Props(new HttpClient(ioBridge)))
+//
+//  val facebookApiConduit = system.actorOf(
+//    props = Props(new HttpConduit(httpClient, "graph.facebook.com", 443, sslEnabled = true)),
+//    name = "facebook-api-conduit"
+//  )
+//
+//  val token = "TODO"
+//
+//  val fbApi = new SprayClientFacebookGraphApi(facebookApiConduit)
+//
+//  def main(args: Array[String]) {
+//    val users = Await.result(fbApi.getLikes("487217224648173", token), 1 minutes)
+//    println("Result : " + users)
+//    system.shutdown
+//  }
 
-  val facebookApiConduit = system.actorOf(
-    props = Props(new HttpConduit(httpClient, "graph.facebook.com", 443, sslEnabled = true)),
-    name = "facebook-api-conduit"
-  )
-  
+  implicit val timeout = Timeout(5 seconds)
+
+  implicit val system = ActorSystem()
+  import system.dispatcher // execution context for futures
+  val fbApi = system.actorOf(Props(new SprayClientFacebookGraphApi("https://graph.facebook.com")), name = "facebookActor")
+
   val token = "TODO"
 
-  val fbApi = new SprayClientFacebookGraphApi(facebookApiConduit)
+    def main(args: Array[String]) {
+        val users = fbApi ? getLikes("487217224648173", token)
 
-  def main(args: Array[String]) {
-    val users = Await.result(fbApi.getLikes("487217224648173", token), 1 minutes)
-    println("Result : " + users)
-    system.shutdown
+
+//      users onComplete {
+//        case Success(Seq[User]) =>
+//
+//          shutdown()
+//
+//
+//
+//        case Failure(error) =>
+//          println(error)
+//          shutdown()
+//      }
+
+
+
+
+
+
+      }
+
+  def shutdown(): Unit = {
+    IO(Http).ask(Http.CloseAll)(1.second).await
+    system.shutdown()
   }
+
+
 
 }

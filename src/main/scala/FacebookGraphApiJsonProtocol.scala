@@ -1,6 +1,9 @@
 package spracebook
 
-import spray.json._
+//import spray.json._
+import spray.httpx.SprayJsonSupport._
+import spray.json.{JsonFormat, DefaultJsonProtocol}
+
 
 object FacebookGraphApiJsonProtocol extends DefaultJsonProtocol {
   

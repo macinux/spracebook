@@ -1,3 +1,6 @@
+forked to have sbt0.12.4, akka 2.1 and spray 1.1 support
+
+
 Spracebook is a native Scala SDK that provides asynchronous access to the [Facebook Graph API][1]. It is built heavily on [spray-client][2] for async non-blocking HTTP I/O and [spray-json][3] for parsing JSON responses into Scala case classes.
 
 While Spracebook is in production use at [Pongr][9], it currently uses many proof-of-concept ideas and will most likely undergo heavy changes in the future. Thus, it's currently only at a 0.1 state. We would love to hear any feedback you have on the approach Spracebook takes to provide an async native Scala SDK experience for a REST web service. We will also be releasing similar libraries for Instagram, Twitter, etc in the future based on these ideas.
