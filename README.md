@@ -1,5 +1,5 @@
-forked from pongr / spracebook
-added sbt0.12.4, akka 2.1 and spray 1.1 support, akka actor based 
+forked from pongr / spracebook.
+added sbt0.12.4, akka 2.1 and spray 1.1 support, akka actor based.
 original README/example not working anymore.
 will have updated version
 
