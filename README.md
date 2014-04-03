@@ -15,10 +15,10 @@ Spracebook is released under the [Apache 2 License][5].
 
 ### Authors
 
-* [macinux][6]
-* [Zach Cox][7]
-* [Byamba Tumurkhuu][8]
-* [Bayarmunkh Davaadorj][9]
+* [macinux][10]
+* [Zach Cox][6]
+* [Byamba Tumurkhuu][7]
+* [Bayarmunkh Davaadorj][8]
 
 [1]: https://developers.facebook.com/docs/reference/api/
 [2]: http://spray.io/documentation/1.0-M8.1/spray-client/
@@ -29,3 +29,4 @@ Spracebook is released under the [Apache 2 License][5].
 [7]: https://github.com/pcetsogtoo
 [8]: https://github.com/bayarmunkh
 [9]: http://pongr.com
+[10]:https://github.com/macinux
