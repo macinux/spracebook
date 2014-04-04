@@ -50,7 +50,7 @@ import akka.util.Timeout
 
 import akka.io.IO
 import akka.pattern.ask
-import spracebook.FacebookGraphApiJsonProtocol.User
+import spracebook.FacebookGraphApiJsonProtocol.{Insight, User}
 import spray.can.Http
 import spray.http._
 import spray.client.pipelining._
@@ -68,9 +68,11 @@ import akka.pattern.ask
 import akka.util.Timeout
 import scala.concurrent.duration._
 import scala.language.postfixOps
+import akka.kernel.Main
+import java.util.Calendar
 
 
-object SprayCientFacebookApiTest {
+object SprayCientFacebookApiTest extends App {
 //  implicit val system = ActorSystem()
 //  val ioBridge = IOExtension(system).ioBridge()
 //  val httpClient = system.actorOf(Props(new HttpClient(ioBridge)))
@@ -94,35 +96,54 @@ object SprayCientFacebookApiTest {
 
   implicit val system = ActorSystem()
   import system.dispatcher // execution context for futures
-  val fbApi = system.actorOf(Props(new SprayClientFacebookGraphApi("https://graph.facebook.com")), name = "facebookActor")
-
-  val token = "TODO"
-
-    def main(args: Array[String]) {
-        val users = fbApi ? getLikes("487217224648173", token)
+//  val fbApi = system.actorOf(Props(new SprayClientFacebookGraphApi("https://graph.facebook.com")), name = "facebookActor")
+  val fbApi = new SprayClientFacebookGraphApi("https://graph.facebook.com")
 
 
-//      users onComplete {
-//        case Success(Seq[User]) =>
-//
-//          shutdown()
-//
-//
-//
-//        case Failure(error) =>
-//          println(error)
-//          shutdown()
-//      }
+  val token = "735600816480312|vMfKPYeroqBHvFQbvDYR71mmaeI"
+//  val token="CAAKdBmlc4DgBANkZBENDZAcLRHqf3IsuUmL1WVHGBKh1IZCAoXBBVAxLtb0ZBZAG9Cf4turM323uCsh5alEGPm1HCoAddrKZBR9d9YYO9W2bia40cFskfZBAfKHAqZBWNdol4zXBKBAZARlHU5T6ZCNOPICSFqJ9J3wwdy8VqmZBuGhMtROPUt9DFBigCLUhlrMe7cASDIlLczrSQZDZD"
 
+   println("hello")
 
+//  val users = fbApi ? getLikes("670035469701758", token)
+//  val users = (fbApi.getLikes("149490891871365", token))
+  val todayTime = Calendar.getInstance();
+  val currentLong=todayTime.getTimeInMillis;
 
+   todayTime.add( Calendar.MONTH ,  -3 );
+   val preLong=todayTime.getTimeInMillis
+
+   println(preLong)
+  println(currentLong)
+  val users = fbApi.getApplicationOpenGraphActionClick("670035469701758","735600816480312|vMfKPYeroqBHvFQbvDYR71mmaeI",preLong,currentLong)
 
 
 
-      }
+  //  Future[Seq[User]]
+
+  users onComplete {
+    case Success(result:Seq[Any])  => {
+
+      val result2=result.asInstanceOf[Seq[Insight]]
+      println("good")
+      result2.foreach(u=>println(u))
+
+
+      shutdown()
+
+    }
+    case Failure(failure) => {
+      println("failed")
+      shutdown()
+    }
+
+    case _ => println("fdfdf")
+  }
+
+
 
   def shutdown(): Unit = {
-    IO(Http).ask(Http.CloseAll)(1.second).await
+//    IO(Http).ask(Http.CloseAll)(1.second).await
     system.shutdown()
   }
 
